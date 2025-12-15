@@ -1,0 +1,25 @@
+{
+  "summary": {
+    "rows": 3,
+    "n_col": 3,
+    "columns_defined": [
+      "City",
+      " number",
+      " temp"
+    ]
+  },
+  "columns_stats": {
+    "City": {
+      "missing": 1,
+      "non_empty": 2
+    },
+    " number": {
+      "missing": 1,
+      "non_empty": 2
+    },
+    " temp": {
+      "missing": 0,
+      "non_empty": 3
+    }
+  }
+}
