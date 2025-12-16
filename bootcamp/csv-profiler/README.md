@@ -26,7 +26,5 @@ The profiler automatically:
   - `report.json`
   - `report.md`
 
----
 
-## Project Structure
 
