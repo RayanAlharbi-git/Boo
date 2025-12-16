@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+src/csv_profiler/__init__.py
+src/csv_profiler/cli.py
+src/csv_profiler/io.py
+src/csv_profiler/main.py
+src/csv_profiler/profile.py
+src/csv_profiler/render.py
+src/csv_profiler.egg-info/PKG-INFO
+src/csv_profiler.egg-info/SOURCES.txt
+src/csv_profiler.egg-info/dependency_links.txt
+src/csv_profiler.egg-info/top_level.txt

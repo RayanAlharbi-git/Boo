@@ -1,25 +1,45 @@
 {
+  "source": null,
   "summary": {
-    "rows": 3,
-    "n_col": 3,
-    "columns_defined": [
-      "City",
-      " number",
-      " temp"
-    ]
+    "rows": 17,
+    "columns": 4
   },
-  "columns_stats": {
-    "City": {
-      "missing": 1,
-      "non_empty": 2
+  "columns": {
+    "name": {
+      "type": "text",
+      "stats": {
+        "count": 17,
+        "missing": 0,
+        "unique": 5,
+        "top": 5
+      }
     },
-    " number": {
-      "missing": 1,
-      "non_empty": 2
+    "age": {
+      "type": "text",
+      "stats": {
+        "count": 14,
+        "missing": 3,
+        "unique": 4,
+        "top": 5
+      }
     },
-    " temp": {
-      "missing": 0,
-      "non_empty": 3
+    "city": {
+      "type": "text",
+      "stats": {
+        "count": 13,
+        "missing": 4,
+        "unique": 4,
+        "top": 5
+      }
+    },
+    "salary": {
+      "type": "text",
+      "stats": {
+        "count": 13,
+        "missing": 4,
+        "unique": 4,
+        "top": 5
+      }
     }
   }
 }

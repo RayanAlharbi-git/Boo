@@ -1,46 +1,38 @@
 
-def basic_profile(rows: list[dict[str, str]]) -> dict:
-    # 1. Handle empty input data
+def basic_profile(rows: list[dict[str, str]], source: str | None = None) -> dict:
     if not rows:
-        # Returns early if there are no rows
-        return {"rows": 0, "n_col": 0, "columns_defined": []} 
+        return {
+            "source": source,
+            "summary": {"rows": 0, "columns": 0},
+            "columns": {}
+        }
 
-    # --- FIX APPLIED HERE ---
-    # Derive column names from the keys of the first row (dictionary)
     column_names = rows[0].keys()
-    
-    # Initialize all tracker dictionaries using the correct column names
-    # Note: The `columns` dictionary itself is mostly just a placeholder/list of keys
-    columns = {c: 0 for c in column_names}
-    missing = {c: 0 for c in column_names}
-    non_empty = {c: 0 for c in column_names}
-    # ------------------------
-
-    # 2. Iterate through all data rows
+    # Collect all column values
+    columns_values: dict[str, list[str]] = {c: [] for c in column_names}
     for row in rows:
-        # 3. Iterate through all defined columns
-        for c in column_names: # Iterate over column_names directly for clarity
-            
-            # v = (row.get(c) or "").strip() 
-            # Safely gets the value, defaults to "" if None or missing key, then strips whitespace
-            v = (row.get(c) or "").strip() 
-            
-            # 4. Counting logic
-            if v == "":
-                # If the value is empty after stripping (missing or blank)
-                missing[c] += 1
-            else:
-                # If the value has content
-                non_empty[c]+= 1
+        for c in column_names:
+            v = row.get(c) or ""
+            columns_values[c].append(v.strip())
 
-    # 5. Return the profiling summary
-    return{
-        "rows": len(rows),
-        "n_col": len(column_names),
-        "columns_defined": list(column_names), # Explicitly list the column names
-        "missing": missing,
-        "non_empty": non_empty
+    columns_profile = {}
+    for c, values in columns_values.items():
+        col_type = infer_type(values)
+        if col_type == "number":
+            stats = numeric_stats(values)
+        else:
+            stats = text_stats(values)
+        columns_profile[c] = {
+            "type": col_type,
+            "stats": stats
+        }
+
+    return {
+        "source": source,
+        "summary": {"rows": len(rows), "columns": len(column_names)},
+        "columns": columns_profile
     }
+
 
 
 MISSING = {"", "na", "n/a", "null", "none", "nan"}
@@ -66,37 +58,50 @@ def infer_type(values: list[str]) -> str:
       
    return "number"
 
-def numeric_stats(values:  list[str]) -> dict:
- usable = [v for v in values if not is_missing(v)]
- missing = len(values) - len(usable)
- nums: list[float] = []
- for v in usable:
-   x = try_float(v)
- if x is None:
-   raise ValueError(f"Non-numeric value found: {v!r}")
- nums.append(x)
+from collections import Counter
 
- count = len(nums)
- unique = len(set(nums))
- return {
- "count": count,
+def text_stats(values: list[str], top_k: int = 5) -> dict:
+    usable = [v for v in values if not is_missing(v)]
+    missing = len(values) - len(usable)
 
-def main():
-    # Ensure this path is correct on your machine for the code to run
-    file_path = "/Users/rayan/Desktop/Boocamp_2/bootcamp/src/data/sample.csv"
+    count = len(usable)
+    unique = len(set(usable))
+
+    counts: dict[str, int] = {}
+    for v in usable:
+        counts[v] = counts.get(v, 0) + 1
+
+    top = [{"value": val, "count": c} for val, c in sorted(counts.items(), key=lambda kv: kv[1], reverse=True)[:top_k]]
+
+    return {
+        "count": count,
+        "missing": missing,
+        "unique": unique,
+        "top": top
+    }
+
+from collections import Counter
+
+def numeric_stats(values: list[str], top_k: int = 5) -> dict:
+    usable = [v for v in values if not is_missing(v)]
+    missing = len(values) - len(usable)
     
-    try:
-        data_rows = read_csv_rows(file_path)
-        profile_report = basic_profile(data_rows)
-        
-        # Optional: Print the results nicely
-        import json
-        print(json.dumps(profile_report, indent=4))
-        
-    except FileNotFoundError:
-        print(f"Error: The file path was not found: {file_path}")
-    except Exception as e:
-        print(f"An error occurred during profiling: {e}")
+    nums: list[float] = []
+    for v in usable:
+        x = try_float(v)
+        if x is None:
+            raise ValueError(f"Non-numeric value found: {v!r}")
+        nums.append(x)
+    
+    count = len(nums)
+    unique = len(set(nums))
+    
+    top_counts = Counter(nums).most_common(top_k)
+    top = [{"value": val, "count": c} for val, c in top_counts]
 
-if __name__=="__main__":
-    main()
+    return {
+        "count": count,
+        "missing": missing,
+        "unique": unique,
+        "top": top_counts
+    }

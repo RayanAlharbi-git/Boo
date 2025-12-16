@@ -1,4 +1,18 @@
-City, number, temp
-Riyadh, 2, 3
- ,1 ,4
- Jed, ,7
+name,age,city,salary
+Aisha,23,Riyadh,12000
+Fahad,,Jeddah,9000
+Noor,29,,
+Salem,31,Dammam,15000
+name,age,city,salary
+Aisha,23,Riyadh,12000
+Noor,29,,
+Salem,31,Dammam,15000
+name,age,city,salary
+Fahad,,Jeddah,9000
+Noor,29,,
+Salem,31,Dammam,15000
+name,age,city,salary
+Aisha,23,Riyadh,12000
+Fahad,,Jeddah,9000
+Noor,29,,
+Salem,31,Dammam,15000
